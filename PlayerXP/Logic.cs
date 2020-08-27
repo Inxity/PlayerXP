@@ -32,11 +32,11 @@ namespace PlayerXP
 				{
 					info.xp -= calc;
 					info.level++;
-					SendHint(player, $"<color=\"yellow\"><b>You've leveled up to level {info.level}! You need {calc + PlayerXP.instance.Config.XpIncrement - info.xp} xp for your next level.</b></color>", 4f);
+					SendHint(player, $"<color=\"yellow\"><b>Has subido de nivel a {info.level}! Necesitas {calc + PlayerXP.instance.Config.XpIncrement - info.xp} EXP para tu próximo nivel.</b></color>", 4f);
 				}
 				pInfoDict[userid] = info;
 			}
-			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Giving {xp}xp to {Player.Get(userid).Nickname} ({userid}).");
+			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Dando {xp}EXP a {Player.Get(userid).Nickname} ({userid}).");
 		}
 
 		internal void RemoveXP(string userid, int xp, string msg = null)
@@ -62,7 +62,7 @@ namespace PlayerXP
 				pInfoDict[userid] = info;
 			}
 
-			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Removing {xp}xp from {Player.Get(userid).Nickname} ({userid}).");
+			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Removiendo {xp}EXP de {Player.Get(userid).Nickname} ({userid}).");
 		}
 
 		internal void AdjustKarma(Player player, float amount, bool canOverflow = false)
@@ -99,7 +99,7 @@ namespace PlayerXP
 					pInfoDict[player.UserId].karma = final;
 				}
 			}
-			Log.Warn($"Adjusting player '{player.Nickname}' karma by {amount} to {pInfoDict[player.UserId].karma}");
+			Log.Warn($"Ajustando jugador '{player.Nickname}' karma de {amount} a {pInfoDict[player.UserId].karma}");
 		}
 
 		internal int GetLevel(string userid)

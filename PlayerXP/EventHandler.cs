@@ -25,8 +25,8 @@ namespace PlayerXP
 				if (player != null) name = player.Nickname;
 				else name = hasData ? pInfoDict[ev.Player.UserId].level.ToString() : "[NO DATA]";
 				ev.ReturnMessage =
-					$"Player: {name} ({player.UserId})\n" +
-					$"Level: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
+					$"Jugador: {name} ({player.UserId})\n" +
+					$"Nivel: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
 					$"XP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
 					$"Karma: {(hasData ? pInfoDict[player.UserId].karma.ToString() : "[NO DATA]")}" : "");
 			}
@@ -39,19 +39,19 @@ namespace PlayerXP
 				if (num > 15)
 				{
 					ev.Color = "red";
-					ev.ReturnMessage = "Leaderboards can be no larger than 15.";
+					ev.ReturnMessage = "Las tablas de clasificación no pueden tener más de 15 lineas.";
 					return;
 				}
 				if (pInfoDict.Count != 0)
 				{
-					output = $"Top {num} Players:\n";
+					output = $"Top {num} Jugadores:\n";
 
 					for (int i = 0; i < num; i++)
 					{
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"{i + 1}) {info.name} ({userid}) | Level: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"{i + 1}) {info.name} ({userid}) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 						if (i != pInfoDict.Count - 1) output += "\n";
 						else break;
 					}
@@ -73,7 +73,7 @@ namespace PlayerXP
 			if (cmd == "xptoggle")
 			{
 				ev.IsAllowed = false;
-				ev.Sender.RemoteAdminMessage($"XP saving has been toggled {(isToggled ? "on" : "off")}");
+				ev.Sender.RemoteAdminMessage($"Se ha cambiado el guardado de XP{(isToggled ? "on" : "off")}");
 				isToggled = false;
 			}
 			else if (cmd == "xpsave")
@@ -272,7 +272,7 @@ namespace PlayerXP
 			if (ev.Killer.Id != ev.Target.Id)
 			{
 				SendHint(ev.Target, PlayerXP.instance.Config.PlayerDeathMessage.Replace("{xp}", GetXP(ev.Killer.UserId).ToString()).Replace("{level}", GetLevel(ev.Killer.UserId).ToString()).Replace("{killer}", ev.Killer.Nickname));
-				ev.Target.SendConsoleMessage($"You have {GetXP(ev.Target.UserId)}/{XpToLevelUp(ev.Target.UserId)} xp until you reach level {GetLevel(ev.Target.UserId) + 1}.", "yellow");
+				ev.Target.SendConsoleMessage($"Tienes {GetXP(ev.Target.UserId)}/{XpToLevelUp(ev.Target.UserId)} EXP hasta que llegues al nivel {GetLevel(ev.Target.UserId) + 1}.", "yellow");
 			}
 		}
 

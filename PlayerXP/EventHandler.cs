@@ -25,12 +25,13 @@ namespace PlayerXP
 				if (player != null) name = player.Nickname;
 				else name = hasData ? pInfoDict[ev.Player.UserId].level.ToString() : "[NO DATA]";
 				ev.ReturnMessage =
-					$"Jugador: {name} ({player.UserId})\n" +
+					$"Tus Estadisiticas\n" +
+					$"Nick: {name} (Tu SteamID: {ev.Player.UserId})\n" +
 					$"Nivel: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
-					$"XP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
+					$"Experiencia | EXP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
 					$"Karma: {(hasData ? pInfoDict[player.UserId].karma.ToString() : "[NO DATA]")}" : "");
 			}
-			else if (cmd == "leaderboard" || cmd == "lb")
+			else if (cmd == "leaderboard" || cmd == "lb" || cmd == "tabla")
 			{
 				ev.Allow = false;
 				string output;
@@ -51,7 +52,7 @@ namespace PlayerXP
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"{i + 1}) {info.name} ({userid}) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"{i + 1}) {info.name} (SteamID: [Redacted]) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 						if (i != pInfoDict.Count - 1) output += "\n";
 						else break;
 					}
@@ -69,6 +70,7 @@ namespace PlayerXP
 
 		public void OnRAConsoleCommand(SendingRemoteAdminCommandEventArgs ev)
 		{
+			
 			string cmd = ev.Name.ToLower();
 			if (cmd == "xptoggle")
 			{
@@ -81,6 +83,32 @@ namespace PlayerXP
 				ev.IsAllowed = false;
 				ev.Sender.RemoteAdminMessage("Stats saved!");
 				SaveStats();
+			}
+			else if (cmd == "Rank" || cmd == "rank" || cmd == "tablaexp")
+			{
+				ev.IsAllowed = false;
+				string output;
+				int num = 5;
+				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
+				if (pInfoDict.Count != 0)
+				{
+					output = $"Top {num} Jugadores:\n";
+
+					for (int i = 0; i < num; i++)
+					{
+						if (pInfoDict.Count == i) break;
+						string userid = pInfoDict.ElementAt(i).Key;
+						PlayerInfo info = pInfoDict[userid];
+						output += $"{i + 1}) {info.name} ({ev.Sender.UserId}) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						if (i != pInfoDict.Count - 1) output += "\n";
+						else break;
+					}
+					ev.ReplyMessage = output;
+				}
+				else
+				{
+					ev.ReplyMessage = "Error: there is not enough data to display the leaderboard.";
+				}
 			}
 		}
 

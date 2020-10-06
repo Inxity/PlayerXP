@@ -10,10 +10,11 @@ namespace PlayerXP
 {
 	partial class EventHandler
 	{
+		
 		private const int baseXP = 1000;
 		private System.Random rand = new System.Random();
 
-		private void SendHint(Player player, string msg, float time = 3f)
+		private void SendHint(Player player, string msg, float time = 8f)
 		{
 			player.HintDisplay.Show(new TextHint(msg, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0.25f, 1f, 0f), time));
 		}
@@ -22,6 +23,7 @@ namespace PlayerXP
 		{
 			if (pInfoDict.ContainsKey(userid))
 			{
+			   
 				PlayerInfo info = pInfoDict[userid];
 				Player player = Player.Get(userid);
 				AdjustKarma(player, karmaOverride == -1f ? PlayerXP.instance.Config.KarmaGainedOnGoodDeed : karmaOverride);
@@ -30,6 +32,7 @@ namespace PlayerXP
 				int calc = (info.level - 1) * PlayerXP.instance.Config.XpIncrement + baseXP;
 				if (info.xp >= calc)
 				{
+					
 					info.xp -= calc;
 					info.level++;
 					SendHint(player, $"<color=\"yellow\"><b>Has subido de nivel a {info.level}! Necesitas {calc + PlayerXP.instance.Config.XpIncrement - info.xp} EXP para tu próximo nivel.</b></color>", 4f);
@@ -62,7 +65,7 @@ namespace PlayerXP
 				pInfoDict[userid] = info;
 			}
 
-			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Removiendo {xp}EXP de {Player.Get(userid).Nickname} ({userid}).");
+			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Removiendo {xp} EXP de {Player.Get(userid).Nickname} ({userid}).");
 		}
 
 		internal void AdjustKarma(Player player, float amount, bool canOverflow = false)

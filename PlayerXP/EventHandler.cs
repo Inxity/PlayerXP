@@ -16,26 +16,31 @@ namespace PlayerXP
 		public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
 		{
 			string cmd = ev.Name.ToLower();
-			if (cmd == "level" || cmd == "lvl")
+			if (cmd == "level" || cmd == "lvl" || cmd == "nivel")
 			{
 				ev.Allow = false;
 				Player player = ev.Arguments.Count == 0 ? ev.Player : Player.Get(ev.Arguments[0]);
 				string name;
+				int id;
+				id = player.Id;
 				bool hasData = pInfoDict.ContainsKey(player.UserId);
-				if (player != null) name = player.Nickname;
-				else name = hasData ? pInfoDict[ev.Player.UserId].level.ToString() : "[NO DATA]";
+				name = player.Nickname;
 				ev.ReturnMessage =
-					$"Tus Estadisiticas\n" +
-					$"Nick: {name} (Tu SteamID: {ev.Player.UserId})\n" +
+					$"Estadisticas\n" +
+					$"Para ver los Stats de otro jugadr .lvl [nombre del jugador]\n" +
+					$"Usuario: {name}\n" +
+					$"ID: {id}\n" +
+					$"SteamID: [No disponible]\n" +
 					$"Nivel: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
 					$"Experiencia | EXP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
 					$"Karma: {(hasData ? pInfoDict[player.UserId].karma.ToString() : "[NO DATA]")}" : "");
+				    
 			}
-			else if (cmd == "leaderboard" || cmd == "lb" || cmd == "tabla")
+			else if (cmd == "leaderboard" || cmd == "lb" || cmd == "tabla" || cmd == "top")
 			{
 				ev.Allow = false;
 				string output;
-				int num = 5;
+				int num = 10;
 				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
 				if (num > 15)
 				{
@@ -52,7 +57,7 @@ namespace PlayerXP
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"{i + 1}) {info.name} (SteamID: [Redacted]) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"{i + 1}) {info.name} | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 						if (i != pInfoDict.Count - 1) output += "\n";
 						else break;
 					}
@@ -75,7 +80,7 @@ namespace PlayerXP
 			if (cmd == "xptoggle")
 			{
 				ev.IsAllowed = false;
-				ev.Sender.RemoteAdminMessage($"Se ha cambiado el guardado de XP{(isToggled ? "on" : "off")}");
+				ev.Sender.RemoteAdminMessage($"Se ha cambiado el guardado de XP a {(isToggled ? "on" : "off")}");
 				isToggled = false;
 			}
 			else if (cmd == "xpsave")
@@ -88,7 +93,7 @@ namespace PlayerXP
 			{
 				ev.IsAllowed = false;
 				string output;
-				int num = 5;
+				int num = 10;
 				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
 				if (pInfoDict.Count != 0)
 				{
@@ -114,7 +119,11 @@ namespace PlayerXP
 
 		public void OnPlayerJoin(JoinedEventArgs ev)
 		{
-			if (!File.Exists(Path.Combine(PlayerXP.XPPath, $"{ev.Player.UserId}.json"))) pInfoDict.Add(ev.Player.UserId, new PlayerInfo(ev.Player.Nickname));
+			if (!File.Exists(Path.Combine(PlayerXP.XPPath, $"{ev.Player.UserId}.json"))) {
+                if(!pInfoDict.ContainsKey(ev.Player.UserId))
+                    pInfoDict.Add(ev.Player.UserId, new PlayerInfo(ev.Player.Nickname));
+                else pInfoDict[ev.Player.UserId] = new PlayerInfo(ev.Player.Nickname);
+            }
 		}
 
 		public void OnWaitingForPlayers()

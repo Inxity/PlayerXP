@@ -12,7 +12,7 @@ namespace PlayerXP
 	{
 		
 		private const int baseXP = 1000;
-		private System.Random rand = new System.Random();
+		private Random rand = new Random();
 
 		private void SendHint(Player player, string msg, float time = 8f)
 		{
@@ -102,7 +102,7 @@ namespace PlayerXP
 					pInfoDict[player.UserId].karma = final;
 				}
 			}
-			Log.Warn($"Ajustando jugador '{player.Nickname}' karma de {amount} a {pInfoDict[player.UserId].karma}");
+			Log.Debug($"Ajustando jugador '{player.Nickname}' karma de {amount} a {pInfoDict[player.UserId].karma}");
 		}
 
 		internal int GetLevel(string userid)

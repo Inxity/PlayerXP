@@ -3,6 +3,9 @@ using Exiled.API.Features;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using scp035;
+using System;
+using CISpy;
 
 namespace PlayerXP
 {
@@ -12,6 +15,8 @@ namespace PlayerXP
 		public static Dictionary<Player, Player> pCuffedDict = new Dictionary<Player, Player>();
 
 		private bool isToggled = true;
+
+
 
 		public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
 		{
@@ -34,7 +39,7 @@ namespace PlayerXP
 					$"Nivel: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
 					$"Experiencia | EXP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
 					$"Karma: {(hasData ? pInfoDict[player.UserId].karma.ToString() : "[NO DATA]")}" : "");
-				    
+
 			}
 			else if (cmd == "leaderboard" || cmd == "lb" || cmd == "tabla" || cmd == "top")
 			{
@@ -75,7 +80,7 @@ namespace PlayerXP
 
 		public void OnRAConsoleCommand(SendingRemoteAdminCommandEventArgs ev)
 		{
-			
+
 			string cmd = ev.Name.ToLower();
 			if (cmd == "xptoggle")
 			{
@@ -119,11 +124,12 @@ namespace PlayerXP
 
 		public void OnPlayerJoin(JoinedEventArgs ev)
 		{
-			if (!File.Exists(Path.Combine(PlayerXP.XPPath, $"{ev.Player.UserId}.json"))) {
-                if(!pInfoDict.ContainsKey(ev.Player.UserId))
-                    pInfoDict.Add(ev.Player.UserId, new PlayerInfo(ev.Player.Nickname));
-                else pInfoDict[ev.Player.UserId] = new PlayerInfo(ev.Player.Nickname);
-            }
+			if (!File.Exists(Path.Combine(PlayerXP.XPPath, $"{ev.Player.UserId}.json")))
+			{
+				if (!pInfoDict.ContainsKey(ev.Player.UserId))
+					pInfoDict.Add(ev.Player.UserId, new PlayerInfo(ev.Player.Nickname));
+				else pInfoDict[ev.Player.UserId] = new PlayerInfo(ev.Player.Nickname);
+			}
 		}
 
 		public void OnWaitingForPlayers()
@@ -160,7 +166,7 @@ namespace PlayerXP
 					{
 						int xp = CalcXP(player, PlayerXP.instance.Config.RoundWin);
 						AddXP(player.UserId, xp);
-						//AddXP(player.UserId, PlayerXP.instance.Config.RoundWin, $"You have gained {PlayerXP.instance.Config.RoundWin} xp for winning the round!");
+						AddXP(player.UserId, PlayerXP.instance.Config.RoundWin, $"Ganaste {PlayerXP.instance.Config.RoundWin} por sobrevivir esta ronda!");
 					}
 				}
 			}
@@ -171,11 +177,13 @@ namespace PlayerXP
 			SaveStats();
 		}
 
+
 		public void OnPlayerDying(DyingEventArgs ev)
 		{
 			if (!isToggled || !Round.IsStarted) return;
 
-			if (ev.Killer.Team == ev.Target.Team && ev.Killer.UserId != ev.Target.UserId && PlayerXP.instance.Config.TeamKillPunishment > 0)
+
+			if (ev.Killer.Team == ev.Target.Team && ev.Killer.UserId != ev.Target.UserId && ev.Killer != scp035.API.Scp035Data.GetScp035() && PlayerXP.instance.Config.TeamKillPunishment > 0)
 			{
 				int xp = CalcXP(ev.Killer, PlayerXP.instance.Config.TeamKillPunishment);
 				RemoveXP(ev.Killer.UserId, xp, PlayerXP.instance.Config.PlayerTeamkillMessage.Replace("{xp}", xp.ToString()).Replace("{target}", ev.Target.Nickname));
@@ -192,7 +200,7 @@ namespace PlayerXP
 					isUnarmed = IsUnarmed(ev.Target);
 				}
 				if (ev.Target.Team == Team.MTF) gainedXP = PlayerXP.instance.Config.DclassMtfKill;
-				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.DclassScpKill;
+				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.DclassScpKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.DclassTutorialKill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
@@ -211,7 +219,7 @@ namespace PlayerXP
 					isUnarmed = IsUnarmed(ev.Target);
 				}
 				if (ev.Target.Team == Team.CHI) gainedXP = PlayerXP.instance.Config.ScientistChaosKill;
-				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.ScientistScpKill;
+				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.ScientistScpKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.ScientistTutorialKill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
@@ -225,7 +233,8 @@ namespace PlayerXP
 				int gainedXP = 0;
 				if (ev.Target.Team == Team.CDP) gainedXP = PlayerXP.instance.Config.MtfDclassKill;
 				if (ev.Target.Team == Team.CHI) gainedXP = PlayerXP.instance.Config.MtfChaosKill;
-				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.MtfScpKill;
+				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.MtfScpKill;
+				//if (ev.Target == IsSpy(ev.Killer)) gainedXP = PlayerXP.instance.Config.SpyKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.MtfTutorialKill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
@@ -239,7 +248,7 @@ namespace PlayerXP
 				int gainedXP = 0;
 				if (ev.Target.Team == Team.RSC) gainedXP = PlayerXP.instance.Config.ChaosScientistKill;
 				if (ev.Target.Team == Team.MTF) gainedXP = PlayerXP.instance.Config.ChaosMtfKill;
-				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.ChaosScpKill;
+				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.ChaosScpKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.ChaosTutorialKill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
@@ -273,6 +282,7 @@ namespace PlayerXP
 					else if (ev.Killer.Role == RoleType.Scp106) gainedXP = PlayerXP.instance.Config.Scp106Kill;
 					else if (ev.Killer.Role == RoleType.Scp173) gainedXP = PlayerXP.instance.Config.Scp173Kill;
 					else if (ev.Killer.Role == RoleType.Scp93953 || ev.Killer.Role == RoleType.Scp93989) gainedXP = PlayerXP.instance.Config.Scp939Kill;
+					else if (ev.Killer == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.Scp035Kill;
 
 					if (gainedXP > 0)
 					{
@@ -281,7 +291,7 @@ namespace PlayerXP
 					}
 				}
 
-				if (PlayerXP.instance.Config.TutorialScpKillsPlayer > 0 && ev.Target.Team != Team.TUT && ev.Target.UserId != ev.Killer.UserId)
+				if (PlayerXP.instance.Config.TutorialScpKillsPlayer > 0 && ev.Target.Team != Team.TUT && ev.Target.UserId != ev.Killer.UserId && ev.Killer == scp035.API.Scp035Data.GetScp035())
 				{
 					foreach (Player player in Player.List)
 					{
@@ -322,10 +332,27 @@ namespace PlayerXP
 					if (player.Role == RoleType.Scp106 && ev.Player.UserId != player.UserId && player.Team != Team.TUT && player != null && ev.Player != null && this != null)
 					{
 						int xp = CalcXP(player, PlayerXP.instance.Config.Scp106PocketDeath);
-						SendHint(ev.Player, PlayerXP.instance.Config.PlayerDeathMessage.Replace("{xp}", GetXP(player.UserId).ToString()).Replace("{level}", GetLevel(player.UserId).ToString()));	
+						SendHint(ev.Player, PlayerXP.instance.Config.PlayerDeathMessage.Replace("{xp}", GetXP(player.UserId).ToString()).Replace("{level}", GetLevel(player.UserId).ToString()));
 						AddXP(player.UserId, xp, PlayerXP.instance.Config.Scp106PocketDimensionDeathMessage.Replace("{xp}", xp.ToString()).Replace("{target}", ev.Player.Nickname));
 					}
 				}
+			}
+		}
+
+		public void OnPocketEscape(EscapingPocketDimensionEventArgs ev)
+		{
+
+			if (Round.IsStarted && PlayerXP.instance.Config.Scp106PocketScape > 0)
+			{
+				foreach (Player player in Player.List)
+				{
+					if (ev.Player.Side.Equals(1) || ev.Player.Side.Equals(2) && ev.Player.UserId != player.UserId && player.Team != Team.TUT && ev.Player != null)
+					{
+						int xp = CalcXP(player, PlayerXP.instance.Config.Scp106PocketScape);
+						AddXP(player.UserId, xp, PlayerXP.instance.Config.Scp106PocketScapeMsg.Replace("{xp}", xp.ToString()));
+					}
+				}
+
 			}
 		}
 
@@ -400,6 +427,24 @@ namespace PlayerXP
 		public void OnRemovingHandcuff(RemovingHandcuffsEventArgs ev)
 		{
 			if (pCuffedDict.ContainsKey(ev.Cuffer) && pCuffedDict[ev.Cuffer] != null) pCuffedDict[ev.Cuffer] = null;
+
+		}
+
+		public bool IsSpy(Player p)
+		{
+			try
+			{
+
+				return CISpy.EventHandlers.spies.ContainsKey(p);
+			}
+			catch (Exception)
+			{
+				Log.Error("No se encontró CiSpy");
+				return false;
+			}
 		}
 	}
 }
+
+
+

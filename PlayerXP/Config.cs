@@ -91,6 +91,8 @@ namespace PlayerXP
 		[Description("Valores de EXP.")]
 		public int RoundWin { get; set; } = 200;
 		public int TeamKillPunishment { get; set; } = 200;
+		[Description("EXP al matar un Espia")]
+		public int SpyKill { get; set; } = 75;
 
 		// SCPs
 		[Description("Cuanta EXP ganan los SCP.")]
@@ -100,6 +102,8 @@ namespace PlayerXP
 		public int Scp106Kill { get; set; } = 25;
 		public int Scp173Kill { get; set; } = 25;
 		public int Scp939Kill { get; set; } = 25;
+		[Description("SCP-035")]
+		public int Scp035Kill { get; set; } = 25;
 
 		// Class-D
 		[Description("Class-D EXP.")]
@@ -141,9 +145,17 @@ namespace PlayerXP
 		public int TutorialChaosKill { get; set; } = 50;
 		public int TutorialScpKillsPlayer { get; set; } = 10;
 
+
+		// SCP-035
+		[Description("SCP-035 EXP")]
+		public int Scp035Death { get; set; } = 100;
+
 		// SCP-106
 		[Description("SCP-106 EXP.")]
 		public int Scp106PocketDeath { get; set; } = 50;
+		public int Scp106PocketScape { get; set; } = 80;
+		[Description("Mensaje de Escape")]
+		public string Scp106PocketScapeMsg { get; set; } = "Ganaste<color=#32F607>{xp}</color> de exp por escapar de la dimension de bolsillo!";
 
 		// SCP-049
 		[Description("049 EXP al revivir")]

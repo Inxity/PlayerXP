@@ -32,6 +32,7 @@ namespace PlayerXP
 			Exiled.Events.Handlers.Player.Joined += ev.OnPlayerJoin;
 			Exiled.Events.Handlers.Player.Dying += ev.OnPlayerDying;
 			Exiled.Events.Handlers.Player.FailingEscapePocketDimension += ev.OnPocketDimensionDie;
+			Exiled.Events.Handlers.Player.EscapingPocketDimension += ev.OnPocketEscape;
 			Exiled.Events.Handlers.Scp049.FinishingRecall += ev.OnRecallZombie;
 			Exiled.Events.Handlers.Player.Escaping += ev.OnCheckEscape;
 			Exiled.Events.Handlers.Player.Handcuffing += ev.OnHandcuff;

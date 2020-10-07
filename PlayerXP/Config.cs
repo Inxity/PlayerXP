@@ -155,7 +155,7 @@ namespace PlayerXP
 		public int Scp106PocketDeath { get; set; } = 50;
 		public int Scp106PocketScape { get; set; } = 80;
 		[Description("Mensaje de Escape")]
-		public string Scp106PocketScapeMsg { get; set; } = "Ganaste<color=#32F607>{xp}</color> de exp por escapar de la dimension de bolsillo!";
+		public string Scp106PocketScapeMsg { get; set; } = "Ganaste<color=#32F607>{xp}</color> de exp por escapar de la dimension de bolsillo, tu nivel es <color=red>{level}</color>!";
 
 		// SCP-049
 		[Description("049 EXP al revivir")]

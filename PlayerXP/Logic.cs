@@ -35,7 +35,7 @@ namespace PlayerXP
 					
 					info.xp -= calc;
 					info.level++;
-					SendHint(player, $"<color=\"yellow\"><b>Has subido de nivel a {info.level}! Necesitas {calc + PlayerXP.instance.Config.XpIncrement - info.xp} EXP para tu próximo nivel.</b></color>", 4f);
+					SendHint(player, $"<color=\"yellow\"><b>Has subido de nivel a {info.level}! Necesitas {calc + PlayerXP.instance.Config.XpIncrement - info.xp} EXP para tu próximo nivel.</b></color>", 7f);
 				}
 				pInfoDict[userid] = info;
 			}
@@ -49,7 +49,7 @@ namespace PlayerXP
 				PlayerInfo info = pInfoDict[userid];
 				Player player = Player.Get(userid);
 				info.xp -= xp;
-				if (msg != null) SendHint(player, $"<color=\"yellow\">{msg}</color>", 2f);
+				if (msg != null) SendHint(player, $"<color=\"yellow\">{msg}</color>", 3f);
 				if (info.xp <= 0)
 				{
 					if (info.level > 1)

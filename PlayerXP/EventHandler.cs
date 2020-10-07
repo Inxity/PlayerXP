@@ -6,6 +6,7 @@ using System.IO;
 using scp035;
 using System;
 using CISpy;
+using Exiled.Permissions.Commands.Permissions;
 
 namespace PlayerXP
 {
@@ -183,7 +184,7 @@ namespace PlayerXP
 			if (!isToggled || !Round.IsStarted) return;
 
 
-			if (ev.Killer.Team == ev.Target.Team && ev.Killer.UserId != ev.Target.UserId && ev.Killer != scp035.API.Scp035Data.GetScp035() && PlayerXP.instance.Config.TeamKillPunishment > 0)
+			if (ev.Killer.Team == ev.Target.Team && CISpy.API.SpyData.GetSpies().ContainsKey(ev.Killer) && ev.Killer.UserId != ev.Target.UserId && ev.Killer != scp035.API.Scp035Data.GetScp035() && PlayerXP.instance.Config.TeamKillPunishment > 0)
 			{
 				int xp = CalcXP(ev.Killer, PlayerXP.instance.Config.TeamKillPunishment);
 				RemoveXP(ev.Killer.UserId, xp, PlayerXP.instance.Config.PlayerTeamkillMessage.Replace("{xp}", xp.ToString()).Replace("{target}", ev.Target.Nickname));
@@ -234,7 +235,7 @@ namespace PlayerXP
 				if (ev.Target.Team == Team.CDP) gainedXP = PlayerXP.instance.Config.MtfDclassKill;
 				if (ev.Target.Team == Team.CHI) gainedXP = PlayerXP.instance.Config.MtfChaosKill;
 				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.MtfScpKill;
-				//if (ev.Target == IsSpy(ev.Killer)) gainedXP = PlayerXP.instance.Config.SpyKill;
+				//if (ev.Target == CISpy.API.SpyData.GetSpies().ContainsKey(ev.Target) gainedXP = PlayerXP.instance.Config.SpyKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.MtfTutorialKill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
@@ -341,19 +342,17 @@ namespace PlayerXP
 
 		public void OnPocketEscape(EscapingPocketDimensionEventArgs ev)
 		{
-
-			if (Round.IsStarted && PlayerXP.instance.Config.Scp106PocketScape > 0)
-			{
-				foreach (Player player in Player.List)
+			foreach (Player player in Player.List)
+				if (Round.IsStarted && PlayerXP.instance.Config.Scp106PocketScape > 0)
 				{
-					if (ev.Player.Side.Equals(1) || ev.Player.Side.Equals(2) && ev.Player.UserId != player.UserId && player.Team != Team.TUT && ev.Player != null)
-					{
-						int xp = CalcXP(player, PlayerXP.instance.Config.Scp106PocketScape);
-						AddXP(player.UserId, xp, PlayerXP.instance.Config.Scp106PocketScapeMsg.Replace("{xp}", xp.ToString()));
-					}
-				}
+					int xp = CalcXP(ev.Player, PlayerXP.instance.Config.Scp106PocketScape);
 
-			}
+					AddXP(ev.Player.UserId, xp, PlayerXP.instance.Config.Scp106PocketScapeMsg.Replace("{xp}", xp.ToString()));
+
+					SendHint(ev.Player, PlayerXP.instance.Config.Scp106PocketScapeMsg.Replace("{xp}", xp.ToString()));
+
+
+				}
 		}
 
 		public void OnRecallZombie(FinishingRecallEventArgs ev)

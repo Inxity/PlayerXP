@@ -110,7 +110,7 @@ namespace PlayerXP
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"{i + 1}) {info.name} ({ev.Sender.UserId}) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"{i + 1}) {info.name} ({userid}) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 						if (i != pInfoDict.Count - 1) output += "\n";
 						else break;
 					}

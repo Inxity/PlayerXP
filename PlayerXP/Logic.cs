@@ -39,7 +39,7 @@ namespace PlayerXP
 				}
 				pInfoDict[userid] = info;
 			}
-			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Dando {xp}EXP a {Player.Get(userid).Nickname} ({userid}).");
+			if (PlayerXP.instance.Config.IsDebug) Log.Debug($"Dando {xp}EXP a {Player.Get(userid).Nickname} ({userid}).");
 		}
 
 		internal void RemoveXP(string userid, int xp, string msg = null)
@@ -65,7 +65,7 @@ namespace PlayerXP
 				pInfoDict[userid] = info;
 			}
 
-			if (PlayerXP.instance.Config.IsDebug) Log.Info($"Removiendo {xp} EXP de {Player.Get(userid).Nickname} ({userid}).");
+			if (PlayerXP.instance.Config.IsDebug) Log.Debug($"Removiendo {xp} EXP de {Player.Get(userid).Nickname} ({userid}).");
 		}
 
 		internal void AdjustKarma(Player player, float amount, bool canOverflow = false)
@@ -73,8 +73,8 @@ namespace PlayerXP
 			if (PlayerXP.instance.Config.KarmaEnabled && pInfoDict.ContainsKey(player.UserId))
 			{
 				float final = pInfoDict[player.UserId].karma += amount;
-				Log.Warn("attempting adjust to " + final);
-				Log.Warn(final > PlayerXP.instance.Config.KarmaMaximum);
+				if(PlayerXP.instance.Config.IsDebug) Log.Warn("attempting adjust to " + final);
+				if (PlayerXP.instance.Config.IsDebug) Log.Warn(final > PlayerXP.instance.Config.KarmaMaximum);
 				if (final > PlayerXP.instance.Config.KarmaMaximum)
 				{
 					if (canOverflow)
@@ -102,6 +102,7 @@ namespace PlayerXP
 					pInfoDict[player.UserId].karma = final;
 				}
 			}
+			if (PlayerXP.instance.Config.IsDebug)
 			Log.Debug($"Ajustando jugador '{player.Nickname}' karma de {amount} a {pInfoDict[player.UserId].karma}");
 		}
 

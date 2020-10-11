@@ -121,6 +121,52 @@ namespace PlayerXP
 					ev.ReplyMessage = "Error: there is not enough data to display the leaderboard.";
 				}
 			}
+			/*else if (cmd == "Nivel" || cmd == "lvl" || cmd == "miralovicioquesoy")
+			{
+				ev.IsAllowed = false;
+				Player player = ev.Arguments.Count == 0 ? ev.Sender : Player.Get(ev.Arguments[0]);
+				string name;
+				int id;
+				string idsteam = ev.Sender.UserId;
+				if (idsteam == null) idsteam = pInfoDict[player.UserId].level.ToString();
+				id = player.Id;
+				bool hasData = pInfoDict.ContainsKey(player.UserId);
+				name = player.Nickname;
+				ev.ReplyMessage =
+					$"Estadisticas\n" +
+					$"Puedes usar la pagina https://steamid.io/lookup/, para sacar la steamid, si lo desean\n" +
+					$"Usuario: {name}\n" +
+					$"ID: {id} | Solo si esta conectado\n" +
+					$"SteamID: [En Mantenimiento]\n" +
+					$"Nivel: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
+					$"Experiencia | EXP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
+					$"Karma: {(hasData ? pInfoDict[player.UserId].karma.ToString() : "[NO DATA]")}" : "");
+			}*/
+			else if (cmd == "top" || cmd == "top10")
+			{
+				ev.IsAllowed = false;
+				string output;
+				int num = 10;
+				int svnum = PlayerXP.instance.Config.SvNumber;
+				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
+				if (pInfoDict.Count != 0)
+				{
+					output = $"```diff\n-- Top {num} de Cerberus #{svnum} --\n--- Jugadores ---\n\n";
+
+					for (int i = 0; i < num; i++)
+					{
+						if (pInfoDict.Count == i) break;
+						string userid = pInfoDict.ElementAt(i).Key;
+						PlayerInfo info = pInfoDict[userid];
+						output += $"+ {i + 1} {info.name} | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+
+						if (i != pInfoDict.Count - 1) output += "\n\n";
+						else break;
+					}
+					output += "\n```";
+					ev.ReplyMessage = output;
+				}
+			}
 		}
 
 		public void OnPlayerJoin(JoinedEventArgs ev)

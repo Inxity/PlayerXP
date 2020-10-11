@@ -9,6 +9,8 @@ namespace PlayerXP
 
 		[Description("Si el plugin debe estar activado o no.")]
 		public bool IsEnabled { get; set; } = true;
+		[Description("Numero del servidor")]
+		public int SvNumber { get; set; } = 1;
 
 		[Description("Modo debug, que muestra distintos logs en la consola.")]
 		public bool IsDebug { get; set; } = false;

@@ -17,6 +17,8 @@ namespace PlayerXP
 
 		[Description("Un factor de escala global para todos los valores de XP.")]
 		public float XpScale { get; set; } = 1.0f;
+		[Description("Boost de EXP por VIP y Donador")]
+		public float XPBoost { get; set; } = 1.15f;
 
 		[Description("¿Cuánto más XP debería necesitar para pasar al siguiente nivel que el anterior?.")]
 		public int XpIncrement { get; set; } = 250;
@@ -95,6 +97,9 @@ namespace PlayerXP
 		public int TeamKillPunishment { get; set; } = 200;
 		[Description("EXP al matar un Espia")]
 		public int SpyKill { get; set; } = 75;
+		[Description("EXP por asistencia de kill")]
+		public int AssistKill { get; set; } = 15;
+		
 
 		// SCPs
 		[Description("Cuanta EXP ganan los SCP.")]
@@ -114,6 +119,7 @@ namespace PlayerXP
 		public int DclassScpKill { get; set; } = 200;
 		public int DclassTutorialKill { get; set; } = 100;
 		public int DclassEscape { get; set; } = 100;
+		public int D035Kill { get; set; } = 100;
 
 		// Scientist
 		[Description("Cientifico EXP.")]
@@ -122,6 +128,7 @@ namespace PlayerXP
 		public int ScientistScpKill { get; set; } = 200;
 		public int ScientistTutorialKill { get; set; } = 100;
 		public int ScientistEscape { get; set; } = 100;
+		public int S035Kill { get; set; } = 100;
 
 		// MTF
 		[Description("MTF EXP.")]
@@ -130,6 +137,7 @@ namespace PlayerXP
 		public int MtfScpKill { get; set; } = 100;
 		public int MtfTutorialKill { get; set; } = 50;
 		public int MtfScientistEscape { get; set; } = 25;
+		public int M035Kill { get; set; } = 100;
 
 		// Chaos
 		[Description("Chaos EXP.")]
@@ -138,6 +146,7 @@ namespace PlayerXP
 		public int ChaosScpKill { get; set; } = 100;
 		public int ChaosTutorialKill { get; set; } = 50;
 		public int ChaosDclassEscape { get; set; } = 25;
+		public int C035Kill { get; set; } = 100;
 
 		// Tutorial
 		[Description("Tutorial EXP | Por alguna razon esto esta aca.")]
@@ -146,11 +155,9 @@ namespace PlayerXP
 		public int TutorialMtfKill { get; set; } = 50;
 		public int TutorialChaosKill { get; set; } = 50;
 		public int TutorialScpKillsPlayer { get; set; } = 10;
+		public int T035Kill { get; set; } = 10;
 
 
-		// SCP-035
-		[Description("SCP-035 EXP")]
-		public int Scp035Death { get; set; } = 100;
 
 		// SCP-106
 		[Description("SCP-106 EXP.")]

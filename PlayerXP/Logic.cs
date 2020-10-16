@@ -1,4 +1,5 @@
 ﻿using Exiled.API.Features;
+using Exiled.Permissions.Extensions;
 using Hints;
 using Newtonsoft.Json;
 using System;
@@ -23,9 +24,12 @@ namespace PlayerXP
 		{
 			if (pInfoDict.ContainsKey(userid))
 			{
-			   
+
 				PlayerInfo info = pInfoDict[userid];
 				Player player = Player.Get(userid);
+				/*if (player.GroupName == "vip") {
+					xp = (int)(xp * PlayerXP.instance.Config.XPBoost);
+				}*/
 				AdjustKarma(player, karmaOverride == -1f ? PlayerXP.instance.Config.KarmaGainedOnGoodDeed : karmaOverride);
 				info.xp += (int)(xp * PlayerXP.instance.Config.XpScale * (PlayerXP.instance.Config.KarmaEnabled ? info.karma : PlayerXP.instance.Config.KarmaInitial));
 				if (msg != null) SendHint(player, $"<color=\"yellow\">{msg}</color>");

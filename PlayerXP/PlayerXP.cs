@@ -56,6 +56,7 @@ namespace PlayerXP
 			Exiled.Events.Handlers.Player.Escaping -= ev.OnCheckEscape;
 			Exiled.Events.Handlers.Player.Handcuffing -= ev.OnHandcuff;
 			Exiled.Events.Handlers.Player.RemovingHandcuffs -= ev.OnRemovingHandcuff;
+			Exiled.Events.Handlers.Player.EscapingPocketDimension -= ev.OnPocketEscape;
 
 			ev = null;
 		}

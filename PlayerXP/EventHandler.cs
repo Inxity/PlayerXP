@@ -166,6 +166,33 @@ namespace PlayerXP
 					output += "\n```";
 					ev.ReplyMessage = output;
 				}
+
+			}
+			else if (cmd == "admintop" || cmd == "atop")
+			{
+				ev.IsAllowed = false;
+				string output;
+				int num = 10;
+				int svnum = PlayerXP.instance.Config.SvNumber;
+				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
+				if (pInfoDict.Count != 0)
+				{
+					output = $"```diff\n-- Top {num} de Cerberus #{svnum} --\n--- Jugadores ---\n\n";
+
+					for (int i = 0; i < num; i++)
+					{
+						if (pInfoDict.Count == i) break;
+						string userid = pInfoDict.ElementAt(i).Key;
+						PlayerInfo info = pInfoDict[userid];
+						output += $"+ {i + 1} {info.name} | SteamID: {userid}  | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+
+						if (i != pInfoDict.Count - 1) output += "\n\n";
+						else break;
+					}
+					output += "\n```";
+					ev.ReplyMessage = output;
+
+				}
 			}
 		}
 
@@ -214,6 +241,7 @@ namespace PlayerXP
 						int xp = CalcXP(player, PlayerXP.instance.Config.RoundWin);
 						AddXP(player.UserId, xp);
 						AddXP(player.UserId, PlayerXP.instance.Config.RoundWin, $"Ganaste {PlayerXP.instance.Config.RoundWin} por sobrevivir esta ronda!");
+						SendHint(player, $"Ganaste <color=red>{PlayerXP.instance.Config.RoundWin}</color>de EXP por ganar esta ronda!");
 					}
 				}
 			}

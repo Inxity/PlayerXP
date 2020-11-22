@@ -3,7 +3,6 @@ using Exiled.API.Features;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using scp035;
 using System;
 using CISpy;
 using Exiled.Permissions.Commands.Permissions;
@@ -259,7 +258,7 @@ namespace PlayerXP
 
 
 			if (ev.Killer.Team == ev.Target.Team && !CISpy.API.SpyData.GetSpies().ContainsKey(ev.Killer) && !CISpy.API.SpyData.GetSpies().ContainsKey(ev.Target) 
-				&& ev.Killer.UserId != ev.Target.UserId && ev.Killer != scp035.API.Scp035Data.GetScp035() && PlayerXP.instance.Config.TeamKillPunishment > 0)
+				&& ev.Killer.UserId != ev.Target.UserId && PlayerXP.instance.Config.TeamKillPunishment > 0)
 			{
 				int xp = CalcXP(ev.Killer, PlayerXP.instance.Config.TeamKillPunishment);
 				RemoveXP(ev.Killer.UserId, xp, PlayerXP.instance.Config.PlayerTeamkillMessage.Replace("{xp}", xp.ToString()).Replace("{target}", ev.Target.Nickname));
@@ -276,9 +275,8 @@ namespace PlayerXP
 					isUnarmed = IsUnarmed(ev.Target);
 				}
 				if (ev.Target.Team == Team.MTF) gainedXP = PlayerXP.instance.Config.DclassMtfKill;
-				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.DclassScpKill;
+				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.DclassScpKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.DclassTutorialKill;
-				if (ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.D035Kill;
 
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
@@ -297,9 +295,8 @@ namespace PlayerXP
 					isUnarmed = IsUnarmed(ev.Target);
 				}
 				if (ev.Target.Team == Team.CHI) gainedXP = PlayerXP.instance.Config.ScientistChaosKill;
-				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.ScientistScpKill;
+				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.ScientistScpKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.ScientistTutorialKill;
-				if (ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.S035Kill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
 				{
@@ -312,10 +309,9 @@ namespace PlayerXP
 				int gainedXP = 0;
 				if (ev.Target.Team == Team.CDP) gainedXP = PlayerXP.instance.Config.MtfDclassKill;
 				if (ev.Target.Team == Team.CHI) gainedXP = PlayerXP.instance.Config.MtfChaosKill;
-				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.MtfScpKill;
+				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.MtfScpKill;
 				if (CISpy.API.SpyData.GetSpies().ContainsKey(ev.Target)) gainedXP = PlayerXP.instance.Config.SpyKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.MtfTutorialKill;
-				if (ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.M035Kill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
 				{
@@ -328,9 +324,8 @@ namespace PlayerXP
 				int gainedXP = 0;
 				if (ev.Target.Team == Team.RSC) gainedXP = PlayerXP.instance.Config.ChaosScientistKill;
 				if (ev.Target.Team == Team.MTF) gainedXP = PlayerXP.instance.Config.ChaosMtfKill;
-				if (ev.Target.Team == Team.SCP || ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.ChaosScpKill;
+				if (ev.Target.Team == Team.SCP) gainedXP = PlayerXP.instance.Config.ChaosScpKill;
 				if (ev.Target.Team == Team.TUT) gainedXP = PlayerXP.instance.Config.ChaosTutorialKill;
-				if (ev.Target == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.C035Kill;
 
 				if (gainedXP > 0 && ev.Target.UserId != ev.Killer.UserId)
 				{
@@ -363,7 +358,6 @@ namespace PlayerXP
 					else if (ev.Killer.Role == RoleType.Scp106) gainedXP = PlayerXP.instance.Config.Scp106Kill;
 					else if (ev.Killer.Role == RoleType.Scp173) gainedXP = PlayerXP.instance.Config.Scp173Kill;
 					else if (ev.Killer.Role == RoleType.Scp93953 || ev.Killer.Role == RoleType.Scp93989) gainedXP = PlayerXP.instance.Config.Scp939Kill;
-					else if (ev.Killer == scp035.API.Scp035Data.GetScp035()) gainedXP = PlayerXP.instance.Config.Scp035Kill;
 
 					if (gainedXP > 0)
 					{
@@ -372,7 +366,7 @@ namespace PlayerXP
 					}
 				}
 
-				if (PlayerXP.instance.Config.TutorialScpKillsPlayer > 0 && ev.Target.Team != Team.TUT && ev.Target.UserId != ev.Killer.UserId && ev.Killer == scp035.API.Scp035Data.GetScp035())
+				if (PlayerXP.instance.Config.TutorialScpKillsPlayer > 0 && ev.Target.Team != Team.TUT && ev.Target.UserId != ev.Killer.UserId)
 				{
 					foreach (Player player in Player.List)
 					{

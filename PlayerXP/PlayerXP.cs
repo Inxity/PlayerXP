@@ -29,7 +29,7 @@ namespace PlayerXP
 			Exiled.Events.Handlers.Server.RoundStarted += ev.OnRoundStart;
 			Exiled.Events.Handlers.Server.RestartingRound += ev.OnRoundRestart;
 			Exiled.Events.Handlers.Server.RoundEnded += ev.OnRoundEnd;
-			Exiled.Events.Handlers.Player.Joined += ev.OnPlayerJoin;
+			Exiled.Events.Handlers.Player.Verified += ev.OnPlayerVerify;
 			Exiled.Events.Handlers.Player.Dying += ev.OnPlayerDying;
 			Exiled.Events.Handlers.Player.FailingEscapePocketDimension += ev.OnPocketDimensionDie;
 			Exiled.Events.Handlers.Player.EscapingPocketDimension += ev.OnPocketEscape;
@@ -49,7 +49,7 @@ namespace PlayerXP
 			Exiled.Events.Handlers.Server.RoundStarted -= ev.OnRoundStart;
 			Exiled.Events.Handlers.Server.RestartingRound -= ev.OnRoundRestart;
 			Exiled.Events.Handlers.Server.RoundEnded -= ev.OnRoundEnd;
-			Exiled.Events.Handlers.Player.Joined -= ev.OnPlayerJoin;
+			Exiled.Events.Handlers.Player.Verified += ev.OnPlayerVerify;
 			Exiled.Events.Handlers.Player.Dying -= ev.OnPlayerDying;
 			Exiled.Events.Handlers.Player.FailingEscapePocketDimension -= ev.OnPocketDimensionDie;
 			Exiled.Events.Handlers.Scp049.FinishingRecall -= ev.OnRecallZombie;

@@ -39,7 +39,7 @@ namespace PlayerXP
 					
 					info.xp -= calc;
 					info.level++;
-					SendHint(player, $"<color=\"yellow\"><b>Has subido de nivel a {info.level}! Necesitas {calc + PlayerXP.instance.Config.XpIncrement - info.xp} EXP para tu próximo nivel.</b></color>", 7f);
+					SendHint(player, $"<color=\"yellow\"><b>Seviye atladın, yeni seviyen {info.level}! Seviye atlamak için {calc + PlayerXP.instance.Config.XpIncrement - info.xp} XP'ye ihtiyacın var.</b></color>", 7f);
 				}
 				pInfoDict[userid] = info;
 			}
@@ -69,7 +69,7 @@ namespace PlayerXP
 				pInfoDict[userid] = info;
 			}
 
-			if (PlayerXP.instance.Config.IsDebug) Log.Debug($"Removiendo {xp} EXP de {Player.Get(userid).Nickname} ({userid}).");
+			if (PlayerXP.instance.Config.IsDebug) Log.Debug($"{xp} XP {Player.Get(userid).Nickname} Adlı kişiden alındı ({userid}).");
 		}
 
 		internal void AdjustKarma(Player player, float amount, bool canOverflow = false)
@@ -107,7 +107,7 @@ namespace PlayerXP
 				}
 			}
 			if (PlayerXP.instance.Config.IsDebug)
-			Log.Debug($"Ajustando jugador '{player.Nickname}' karma de {amount} a {pInfoDict[player.UserId].karma}");
+			Log.Debug($"'{player.Nickname}' Adlı oyuncunun karma değeri {amount} ayarlandı {pInfoDict[player.UserId].karma}");
 		}
 
 		internal int GetLevel(string userid)

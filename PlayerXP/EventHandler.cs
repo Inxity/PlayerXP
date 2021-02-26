@@ -21,7 +21,7 @@ namespace PlayerXP
 		public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
 		{
 			string cmd = ev.Name.ToLower();
-			if (cmd == "level" || cmd == "lvl" || cmd == "nivel")
+			if (cmd == "level" || cmd == "lvl" || cmd == "seviye")
 			{
 				ev.Allow = false;
 				Player player = ev.Arguments.Count == 0 ? ev.Player : Player.Get(ev.Arguments[0]);
@@ -31,17 +31,17 @@ namespace PlayerXP
 				bool hasData = pInfoDict.ContainsKey(player.UserId);
 				name = player.Nickname;
 				ev.ReturnMessage =
-					$"Estadisticas\n" +
-					$"Para ver los Stats de otro jugadr .lvl [nombre del jugador]\n" +
-					$"Usuario: {name}\n" +
-					$"ID: {id}\n" +
-					$"SteamID: [No disponible]\n" +
-					$"Nivel: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
-					$"Experiencia | EXP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
+					$"XP Istatistiklerin\n" +
+					$"Başka bir oyuncunun istatistiklerini görmek için .level [oyuncu ismi]\n" +
+					$"Adı: {name}\n" +
+					$"IDsi: {id}\n" +
+					$"SteamID: [Müsait değil]\n" +
+					$"Seviye: {(hasData ? pInfoDict[player.UserId].level.ToString() : "[NO DATA]")}\n" +
+					$"XP: {(hasData ? $"{pInfoDict[player.UserId].xp.ToString()} / {XpToLevelUp(player.UserId)}" : "[NO DATA]")}" + (PlayerXP.instance.Config.KarmaEnabled ? "\n" +
 					$"Karma: {(hasData ? pInfoDict[player.UserId].karma.ToString() : "[NO DATA]")}" : "");
 
 			}
-			else if (cmd == "leaderboard" || cmd == "lb" || cmd == "tabla" || cmd == "top")
+			else if (cmd == "leaderboard" || cmd == "lb" || cmd == "siralama" || cmd == "top")
 			{
 				ev.Allow = false;
 				string output;
@@ -50,19 +50,19 @@ namespace PlayerXP
 				if (num > 15)
 				{
 					ev.Color = "red";
-					ev.ReturnMessage = "Las tablas de clasificación no pueden tener más de 15 lineas.";
+					ev.ReturnMessage = "Sıralama tablosunda 15'den fazla veri gösterilmez.";
 					return;
 				}
 				if (pInfoDict.Count != 0)
 				{
-					output = $"Top {num} Jugadores:\n";
+					output = $"En iyi {num} oyuncu:\n";
 
 					for (int i = 0; i < num; i++)
 					{
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"{i + 1}) {info.name} | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"{i + 1}) {info.name} | Seviye: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 						if (i != pInfoDict.Count - 1) output += "\n";
 						else break;
 					}
@@ -73,7 +73,7 @@ namespace PlayerXP
 				else
 				{
 					ev.Color = "red";
-					ev.ReturnMessage = "Error: there is not enough data to display the leaderboard.";
+					ev.ReturnMessage = "Hata: Sıralama için gösterilebilecek bir veri bulunamadı.";
 				}
 			}
 		}
@@ -85,7 +85,7 @@ namespace PlayerXP
 			if (cmd == "xptoggle")
 			{
 				ev.IsAllowed = false;
-				ev.Sender.RemoteAdminMessage($"Se ha cambiado el guardado de XP a {(isToggled ? "on" : "off")}");
+				ev.Sender.RemoteAdminMessage($"XP Ayarı şu şekilde değiştirildi {(isToggled ? "on" : "off")}");
 				isToggled = false;
 			}
 			else if (cmd == "xpsave")
@@ -94,7 +94,7 @@ namespace PlayerXP
 				ev.Sender.RemoteAdminMessage("Stats saved!");
 				SaveStats();
 			}
-			else if (cmd == "Rank" || cmd == "rank" || cmd == "tablaexp")
+			else if (cmd == "Rank" || cmd == "rank" || cmd == "expsiralama")
 			{
 				ev.IsAllowed = false;
 				string output;
@@ -102,14 +102,14 @@ namespace PlayerXP
 				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
 				if (pInfoDict.Count != 0)
 				{
-					output = $"Top {num} Jugadores:\n";
+					output = $"En iyi {num} oyuncu:\n";
 
 					for (int i = 0; i < num; i++)
 					{
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"{i + 1}) {info.name} ({userid}) | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"{i + 1}) {info.name} ({userid}) | Seviye: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 						if (i != pInfoDict.Count - 1) output += "\n";
 						else break;
 					}
@@ -117,7 +117,7 @@ namespace PlayerXP
 				}
 				else
 				{
-					ev.ReplyMessage = "Error: there is not enough data to display the leaderboard.";
+					ev.ReplyMessage = "Hata: Sıralama için gösterilebilecek bir veri bulunamadı.";
 				}
 			}
 			/*else if (cmd == "Nivel" || cmd == "lvl" || cmd == "miralovicioquesoy")
@@ -150,14 +150,14 @@ namespace PlayerXP
 				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
 				if (pInfoDict.Count != 0)
 				{
-					output = $"```diff\n-- Top {num} de Cerberus #{svnum} --\n--- Jugadores ---\n\n";
+					output = $"```diff\n-- Treasın En iyi {num} oyuncusu #{svnum} --\n--- Oyuncular ---\n\n";
 
 					for (int i = 0; i < num; i++)
 					{
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"+ {i + 1} {info.name} | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"+ {i + 1} {info.name} | Seviye: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 
 						if (i != pInfoDict.Count - 1) output += "\n\n";
 						else break;
@@ -176,14 +176,14 @@ namespace PlayerXP
 				if (ev.Arguments.Count > 0 && int.TryParse(ev.Arguments[0], out int n)) num = n;
 				if (pInfoDict.Count != 0)
 				{
-					output = $"```diff\n-- Top {num} de Cerberus #{svnum} --\n--- Jugadores ---\n\n";
+					output = $"```diff\n-- Treasın En iyi {num} oyuncusu #{svnum} --\n--- Oyuncular ---\n\n";
 
 					for (int i = 0; i < num; i++)
 					{
 						if (pInfoDict.Count == i) break;
 						string userid = pInfoDict.ElementAt(i).Key;
 						PlayerInfo info = pInfoDict[userid];
-						output += $"+ {i + 1} {info.name} | SteamID: {userid}  | Nivel: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
+						output += $"+ {i + 1} {info.name} | SteamID: {userid}  | Seviye: {info.level} | XP: {info.xp} / {XpToLevelUp(userid)}{(PlayerXP.instance.Config.KarmaEnabled ? $" | Karma: {info.karma}" : "")}";
 
 						if (i != pInfoDict.Count - 1) output += "\n\n";
 						else break;
@@ -239,8 +239,8 @@ namespace PlayerXP
 					{
 						int xp = CalcXP(player, PlayerXP.instance.Config.RoundWin);
 						AddXP(player.UserId, xp);
-						AddXP(player.UserId, PlayerXP.instance.Config.RoundWin, $"Ganaste {PlayerXP.instance.Config.RoundWin} por sobrevivir esta ronda!");
-						SendHint(player, $"Ganaste <color=red>{PlayerXP.instance.Config.RoundWin}</color>de EXP por ganar esta ronda!");
+						AddXP(player.UserId, PlayerXP.instance.Config.RoundWin, $"Raundu kazandığın için {PlayerXP.instance.Config.RoundWin} XP kazandın!");
+						SendHint(player, $"Raundu kazandığın için <color=red>{PlayerXP.instance.Config.RoundWin}</color> XP kazandın!");
 					}
 				}
 			}
@@ -394,7 +394,7 @@ namespace PlayerXP
 			if (ev.Killer.Id != ev.Target.Id)
 			{
 				SendHint(ev.Target, PlayerXP.instance.Config.PlayerDeathMessage.Replace("{xp}", GetXP(ev.Killer.UserId).ToString()).Replace("{level}", GetLevel(ev.Killer.UserId).ToString()).Replace("{killer}", ev.Killer.Nickname));
-				ev.Target.SendConsoleMessage($"Tienes {GetXP(ev.Target.UserId)}/{XpToLevelUp(ev.Target.UserId)} EXP hasta que llegues al nivel {GetLevel(ev.Target.UserId) + 1}.", "yellow");
+				ev.Target.SendConsoleMessage($"Sonraki seviyeye ulaşmak için {GetXP(ev.Target.UserId)}/{XpToLevelUp(ev.Target.UserId)} XP'ye ihtiyacın var, sonraki seviye {GetLevel(ev.Target.UserId) + 1}.", "yellow");
 			}
 		}
 
@@ -512,7 +512,7 @@ namespace PlayerXP
 			}
 			catch (Exception)
 			{
-				Log.Error("No se encontró CiSpy");
+				Log.Error("CISpy kurulu değil!");
 				return false;
 			}
 		}
